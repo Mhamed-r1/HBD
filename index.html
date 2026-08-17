@@ -1514,7 +1514,6 @@
       #screen-envelope {
         padding: 48px 14px 24px;
         direction: ltr;
-        justify-content: center;
       }
       #screen-envelope .screen-inner {
         max-width: min(370px, 94vw);
@@ -1571,16 +1570,16 @@
         position: relative;
         width: 100%;
         max-width: min(350px, 92vw);
-        min-height: 430px;
         background: linear-gradient(
           150deg,
           rgba(255, 255, 255, 0.88),
           rgba(253, 243, 240, 0.72)
         );
-        border: 1px solid var(--card-border);
+        border: none;
         border-radius: 24px;
         padding: 22px 18px 20px;
         box-shadow:
+          0 0 0 1px var(--card-border),
           0 16px 42px rgba(90, 60, 80, 0.14),
           0 2px 6px rgba(176, 78, 104, 0.08);
         backdrop-filter: blur(14px);
@@ -1596,7 +1595,9 @@
           rgba(54, 34, 60, 0.88),
           rgba(38, 22, 44, 0.92)
         );
-        box-shadow: 0 16px 40px rgba(18, 8, 22, 0.55);
+        box-shadow:
+          0 0 0 1px var(--card-border),
+          0 16px 40px rgba(18, 8, 22, 0.55);
       }
       .envelope-flap {
         position: absolute;
@@ -1604,23 +1605,61 @@
         left: 0;
         right: 0;
         height: 76px;
-        background: linear-gradient(180deg, var(--rose-deep), var(--rose));
+        background: linear-gradient(
+          180deg,
+          var(--rose-deep) 0%,
+          var(--rose) 40%,
+          rgba(176, 78, 104, 0.85) 100%
+        );
         clip-path: polygon(0 0, 100% 0, 50% 100%);
         transform-origin: top center;
         transition:
           transform 0.85s cubic-bezier(0.4, 0, 0.2, 1),
           opacity 0.65s ease;
         z-index: 5;
-        display: flex;
-        align-items: flex-start;
-        justify-content: center;
-        padding-top: 5px;
-        filter: drop-shadow(0 3px 5px rgba(91, 38, 54, 0.18));
+        pointer-events: none;
+        perspective: 800px;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+      }
+      .envelope-flap::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60%;
+        height: 100%;
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.12) 0%,
+          transparent 50%
+        );
+        clip-path: polygon(0 0, 100% 0, 50% 100%);
         pointer-events: none;
       }
+      .envelope-flap::after {
+        content: "";
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent 5%,
+          rgba(0, 0, 0, 0.08) 30%,
+          rgba(0, 0, 0, 0.12) 50%,
+          rgba(0, 0, 0, 0.08) 70%,
+          transparent 95%
+        );
+      }
       .envelope-card.unlocked .envelope-flap {
-        transform: rotateX(180deg) translateY(-8px);
-        opacity: 0.08;
+        transform: rotateX(180deg) translateY(-2px);
+        opacity: 0;
+        transition:
+          transform 0.9s cubic-bezier(0.4, 0, 0.2, 1),
+          opacity 0.7s ease 0.15s;
       }
       .envelope-card.unlocked {
         box-shadow:
@@ -1683,7 +1722,7 @@
       }
       .envelope-body {
         position: relative;
-        z-index: 3;
+        z-index: 7;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -1701,53 +1740,55 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: clamp(6px, 1.8vw, 8px);
-        margin-top: 48px;
+        gap: clamp(14px, 3.8vw, 20px);
+        margin-top: 62px;
+        position: relative;
+        z-index: 6;
         direction: ltr;
       }
       .pin-slot {
-        width: clamp(38px, 9.5vw, 44px);
-        height: clamp(46px, 11.5vw, 52px);
-        border-radius: 13px;
-        border: 1px solid var(--card-border);
-        background: rgba(255, 255, 255, 0.6);
+        width: clamp(14px, 3.6vw, 16px);
+        height: clamp(14px, 3.6vw, 16px);
+        border-radius: 50%;
+        border: 1.5px solid rgba(176, 78, 104, 0.35);
+        background: transparent;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-family: "Playfair Display", "Montserrat", serif;
-        font-size: clamp(1.2rem, 3.5vw, 1.38rem);
-        font-weight: 600;
-        color: var(--ivory);
+        font-family: "Montserrat", sans-serif;
+        font-size: 0;
+        font-weight: 700;
+        color: var(--rose);
         position: relative;
         transition:
-          border-color 0.25s ease,
-          box-shadow 0.25s ease,
-          background 0.25s ease,
-          transform 0.2s ease;
+          border-color 0.2s ease,
+          background 0.2s ease,
+          transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1),
+          box-shadow 0.2s ease;
       }
       [data-theme="dark"] .pin-slot {
-        background: rgba(255, 255, 255, 0.07);
+        border-color: rgba(240, 168, 182, 0.35);
       }
       .pin-slot.filled {
         border-color: var(--rose);
-        background: rgba(176, 78, 104, 0.14);
-        box-shadow: 0 0 12px rgba(176, 78, 104, 0.25);
-        transform: scale(1.05);
-        color: var(--rose);
+        background: var(--rose);
+        transform: scale(1.15);
+        box-shadow: 0 0 8px rgba(176, 78, 104, 0.3);
+        animation: dotPop 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      @keyframes dotPop {
+        0% {
+          transform: scale(0.5);
+        }
+        100% {
+          transform: scale(1.15);
+        }
+      }
+      .slot-val {
+        display: none;
       }
       .slot-ph {
-        opacity: 0.42;
-        font-size: clamp(0.95rem, 2.6vw, 1.08rem);
-        font-weight: 600;
-        color: var(--muted);
-      }
-      .pin-divider {
-        font-size: clamp(1.25rem, 3.2vw, 1.45rem);
-        font-weight: 700;
-        color: var(--rose);
-        opacity: 0.65;
-        margin: 0 2px;
-        user-select: none;
+        display: none;
       }
       .wrong-pin-message {
         min-height: 1.85rem;
@@ -1778,74 +1819,94 @@
       .keypad-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
+        gap: clamp(10px, 2.8vw, 14px);
         width: 100%;
-        max-width: 240px;
-        margin: 2px auto 0;
+        max-width: 260px;
+        margin: 16px auto 0;
         direction: ltr;
       }
       .key-btn {
-        height: 46px;
-        border-radius: 14px;
-        border: 1px solid rgba(176, 78, 104, 0.18);
-        background: linear-gradient(
-          145deg,
-          rgba(255, 255, 255, 0.9),
-          rgba(253, 240, 244, 0.65)
-        );
+        width: clamp(62px, 16vw, 72px);
+        height: clamp(62px, 16vw, 72px);
+        border-radius: 50%;
+        border: none;
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
         color: var(--ivory);
         font-family: "Montserrat", "Playfair Display", "Manrope", sans-serif;
-        font-size: 1.25rem;
-        font-weight: 600;
+        font-size: clamp(1.35rem, 3.8vw, 1.55rem);
+        font-weight: 300;
         cursor: pointer;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        box-shadow:
-          0 3px 10px rgba(90, 60, 80, 0.06),
-          inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        margin: 0 auto;
+        box-shadow: none;
         user-select: none;
         -webkit-user-select: none;
+        -webkit-tap-highlight-color: transparent;
         touch-action: manipulation;
         transition:
-          background 0.22s ease,
-          border-color 0.22s ease,
-          color 0.22s ease,
-          transform 0.15s ease,
-          box-shadow 0.22s ease;
+          background 0.15s ease,
+          color 0.15s ease,
+          transform 0.12s ease,
+          box-shadow 0.15s ease;
+        line-height: 1;
+        gap: 1px;
+      }
+      .key-num {
+        font-size: clamp(1.35rem, 3.8vw, 1.55rem);
+        font-weight: 300;
+        line-height: 1;
+      }
+      .key-sub {
+        font-size: clamp(0.42rem, 1.1vw, 0.5rem);
+        font-weight: 500;
+        letter-spacing: 1.5px;
+        line-height: 1;
+        opacity: 0.55;
+        min-height: 0.5em;
       }
       [data-theme="dark"] .key-btn {
-        background: linear-gradient(
-          145deg,
-          rgba(62, 38, 68, 0.8),
-          rgba(44, 25, 48, 0.85)
-        );
-        border: 1px solid rgba(240, 168, 182, 0.2);
-        box-shadow:
-          0 3px 10px rgba(10, 4, 12, 0.4),
-          inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.08);
+        color: #f0f0f0;
       }
       .key-btn:hover {
-        border-color: transparent;
-        background: linear-gradient(135deg, var(--rose), var(--rose-deep));
+        background: rgba(176, 78, 104, 0.25);
         color: #ffffff;
-        transform: translateY(-2px);
-        box-shadow: 0 7px 18px rgba(176, 78, 104, 0.35);
+        transform: scale(1.05);
       }
       .key-btn:active {
-        transform: translateY(0) scale(0.94);
-        box-shadow: 0 2px 6px rgba(176, 78, 104, 0.2);
+        transform: scale(0.92);
+        background: rgba(176, 78, 104, 0.45);
+        box-shadow: 0 0 16px rgba(176, 78, 104, 0.25);
       }
       .key-backspace {
         color: var(--rose);
+        font-size: clamp(1.15rem, 3.2vw, 1.3rem);
+        font-weight: 400;
+        background: transparent;
+      }
+      .key-backspace:hover {
+        background: rgba(176, 78, 104, 0.15);
+      }
+      .key-backspace:active {
+        background: rgba(176, 78, 104, 0.3);
       }
       .key-backspace svg {
-        width: 21px;
-        height: 21px;
+        width: clamp(20px, 5.2vw, 24px);
+        height: clamp(20px, 5.2vw, 24px);
         transition: transform 0.15s ease;
       }
       .key-backspace:hover svg {
         transform: scale(1.08);
+      }
+      .key-empty {
+        width: clamp(62px, 16vw, 72px);
+        height: clamp(62px, 16vw, 72px);
+        margin: 0 auto;
       }
       .success-shake {
         animation: envelopeShake 0.55s ease-in-out;
@@ -1881,11 +1942,11 @@
         }
         20%,
         60% {
-          transform: translateX(-8px);
+          transform: translateX(-6px);
         }
         40%,
         80% {
-          transform: translateX(8px);
+          transform: translateX(6px);
         }
       }
       .shake-msg {
@@ -1929,7 +1990,6 @@
         }
         .envelope-card {
           max-width: min(325px, 92vw);
-          min-height: 400px;
           padding: 18px 14px 16px;
           border-radius: 20px;
         }
@@ -1937,23 +1997,31 @@
           height: 71px;
         }
         .pin-display {
-          margin-top: 55px;
-          gap: 6px;
+          margin-top: 58px;
+          gap: 16px;
         }
         .pin-slot {
-          width: 36px;
-          height: 44px;
-          font-size: 1.2rem;
-          border-radius: 11px;
+          width: 14px;
+          height: 14px;
         }
         .keypad-grid {
-          max-width: 220px;
-          gap: 8px;
+          max-width: 235px;
+          gap: 12px;
         }
         .key-btn {
-          height: 42px;
-          font-size: 1.15rem;
-          border-radius: 12px;
+          width: 62px;
+          height: 62px;
+          font-size: 1.35rem;
+        }
+        .key-num {
+          font-size: 1.35rem;
+        }
+        .key-sub {
+          font-size: 0.42rem;
+        }
+        .key-empty {
+          width: 62px;
+          height: 62px;
         }
         .wrong-pin-message {
           font-size: 0.88rem;
@@ -1982,27 +2050,37 @@
         .envelope-card {
           padding: 16px 12px 14px;
           max-width: 305px;
-          min-height: 360px;
         }
         .envelope-flap {
           height: 38px;
         }
         .pin-display {
-          margin-top: 36px;
-          gap: 5px;
+          margin-top: 40px;
+          gap: 14px;
         }
         .pin-slot {
-          width: 34px;
-          height: 40px;
-          font-size: 1.1rem;
+          width: 12px;
+          height: 12px;
         }
         .keypad-grid {
-          max-width: 210px;
-          gap: 6px;
+          max-width: 220px;
+          gap: 10px;
+          margin-top: 10px;
         }
         .key-btn {
-          height: 38px;
-          font-size: 1.08rem;
+          width: 56px;
+          height: 56px;
+          font-size: 1.2rem;
+        }
+        .key-num {
+          font-size: 1.2rem;
+        }
+        .key-sub {
+          font-size: 0.38rem;
+        }
+        .key-empty {
+          width: 56px;
+          height: 56px;
         }
         .wrong-pin-message {
           min-height: 1.4rem;
@@ -2024,28 +2102,38 @@
         }
         .envelope-card {
           padding: 10px 10px 8px;
-          min-height: auto;
           max-width: 290px;
         }
         .envelope-flap {
           height: 32px;
         }
         .pin-display {
-          margin-top: 28px;
-          gap: 4px;
+          margin-top: 38px;
+          gap: 10px;
         }
         .pin-slot {
-          width: 30px;
-          height: 34px;
-          font-size: 1rem;
+          width: 10px;
+          height: 10px;
         }
         .keypad-grid {
-          max-width: 190px;
-          gap: 4px;
+          max-width: 200px;
+          gap: 8px;
+          margin-top: 8px;
         }
         .key-btn {
-          height: 30px;
-          font-size: 0.95rem;
+          width: 48px;
+          height: 48px;
+          font-size: 1rem;
+        }
+        .key-num {
+          font-size: 1rem;
+        }
+        .key-sub {
+          font-size: 0.32rem;
+        }
+        .key-empty {
+          width: 48px;
+          height: 48px;
         }
         .wrong-pin-message {
           min-height: 1.2rem;
@@ -2189,20 +2277,19 @@
               >
                 <div class="pin-slot" data-index="0">
                   <span class="slot-val"></span>
-                  <span class="slot-ph">D</span>
+                  <span class="slot-ph"></span>
                 </div>
                 <div class="pin-slot" data-index="1">
                   <span class="slot-val"></span>
-                  <span class="slot-ph">D</span>
+                  <span class="slot-ph"></span>
                 </div>
-                <div class="pin-divider">/</div>
                 <div class="pin-slot" data-index="2">
                   <span class="slot-val"></span>
-                  <span class="slot-ph">M</span>
+                  <span class="slot-ph"></span>
                 </div>
                 <div class="pin-slot" data-index="3">
                   <span class="slot-val"></span>
-                  <span class="slot-ph">M</span>
+                  <span class="slot-ph"></span>
                 </div>
               </div>
 
@@ -2215,17 +2302,17 @@
 
               <!-- Keypad Grid -->
               <div class="keypad-grid" id="keypad">
-                <button type="button" class="key-btn" data-key="1">1</button>
-                <button type="button" class="key-btn" data-key="2">2</button>
-                <button type="button" class="key-btn" data-key="3">3</button>
-                <button type="button" class="key-btn" data-key="4">4</button>
-                <button type="button" class="key-btn" data-key="5">5</button>
-                <button type="button" class="key-btn" data-key="6">6</button>
-                <button type="button" class="key-btn" data-key="7">7</button>
-                <button type="button" class="key-btn" data-key="8">8</button>
-                <button type="button" class="key-btn" data-key="9">9</button>
+                <button type="button" class="key-btn" data-key="1"><span class="key-num">1</span><span class="key-sub"></span></button>
+                <button type="button" class="key-btn" data-key="2"><span class="key-num">2</span><span class="key-sub">ABC</span></button>
+                <button type="button" class="key-btn" data-key="3"><span class="key-num">3</span><span class="key-sub">DEF</span></button>
+                <button type="button" class="key-btn" data-key="4"><span class="key-num">4</span><span class="key-sub">GHI</span></button>
+                <button type="button" class="key-btn" data-key="5"><span class="key-num">5</span><span class="key-sub">JKL</span></button>
+                <button type="button" class="key-btn" data-key="6"><span class="key-num">6</span><span class="key-sub">MNO</span></button>
+                <button type="button" class="key-btn" data-key="7"><span class="key-num">7</span><span class="key-sub">PQRS</span></button>
+                <button type="button" class="key-btn" data-key="8"><span class="key-num">8</span><span class="key-sub">TUV</span></button>
+                <button type="button" class="key-btn" data-key="9"><span class="key-num">9</span><span class="key-sub">WXYZ</span></button>
                 <div class="key-empty"></div>
-                <button type="button" class="key-btn" data-key="0">0</button>
+                <button type="button" class="key-btn" data-key="0"><span class="key-num">0</span><span class="key-sub">+</span></button>
                 <button
                   type="button"
                   class="key-btn key-backspace"
@@ -2756,21 +2843,9 @@ You are so deeply precious to me. Always stay as bright, beautiful, and happy as
         const slots = document.querySelectorAll(".pin-slot");
         const digits = enteredPin.split("");
         slots.forEach((slot, idx) => {
-          const valEl = slot.querySelector(".slot-val");
-          const phEl = slot.querySelector(".slot-ph");
           if (idx < digits.length) {
-            if (valEl) {
-              valEl.textContent = digits[idx];
-              valEl.style.display = "inline";
-            }
-            if (phEl) phEl.style.display = "none";
             slot.classList.add("filled");
           } else {
-            if (valEl) {
-              valEl.textContent = "";
-              valEl.style.display = "none";
-            }
-            if (phEl) phEl.style.display = "inline";
             slot.classList.remove("filled");
           }
         });
