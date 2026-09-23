@@ -3523,6 +3523,46 @@ Oh, and by the way, when Nour was sending you pictures of the clothes, I was wit
           }
         } catch (e) {}
       }
+      /* Two tracks: the main song plays throughout, and the birthday song
+         takes over on the cake/celebration screen. */
+      const MAIN_TRACK =
+        "Music/Amr Diab...Youm Matabelna  عمرو دياب...يوم ما اتقابلنا.mp3";
+      const CAKE_TRACK = "Music/HappyBirthday.mp3";
+      let activeTrack = MAIN_TRACK;
+
+      /**
+       * Point the audio element at `src` and play it from the start.
+       * Returns true if the track actually changed, so callers can avoid
+       * restarting the song when it is already the right one.
+       */
+      function switchTrack(src) {
+        if (!audio || src === activeTrack) return false;
+        activeTrack = src;
+        audio.pause();
+        audio.src = src;
+        audio.load();
+        audio.currentTime = 0;
+        // Remember a deliberate pause across the switch — swapping tracks
+        // should never override the listener's choice to mute.
+        if (userPaused) {
+          setPlayingUI(false);
+          return true;
+        }
+        try {
+          const promise = audio.play();
+          if (promise !== undefined) {
+            promise
+              .then(() => setPlayingUI(true))
+              .catch(() => setPlayingUI(false));
+          }
+        } catch (e) {}
+        return true;
+      }
+
+      /** Birthday song on the cake screen, the main song everywhere else. */
+      function syncMusicToScreen(index) {
+        switchTrack(index === CAKE_SCREEN ? CAKE_TRACK : MAIN_TRACK);
+      }
       if (toggleBtn) {
         toggleBtn.addEventListener("click", () => {
           if (!audio || !audio.querySelector("source")) return;
@@ -3713,6 +3753,8 @@ Oh, and by the way, when Nour was sending you pictures of the clothes, I was wit
           updateCakeAge();
           resetCakeState();
         }
+        // Birthday song on the cake screen, the main song everywhere else.
+        syncMusicToScreen(current);
         tryPlayMusic();
       }
       window.goTo = goTo;
@@ -3799,7 +3841,7 @@ Oh, and by the way, when Nour was sending you pictures of the clothes, I was wit
 
       /* ================= countdown & celebration ================= */
       // Set your girlfriend's birthday date/time below (YYYY-MM-DDTHH:MM:SS)
-      const targetDate = new Date("2026-09-25T00:00:00");
+      const targetDate = new Date("2026-09-23T00:00:00");
       const elDays = document.getElementById("cd-days");
       const elHours = document.getElementById("cd-hours");
       const elMins = document.getElementById("cd-mins");
@@ -4184,6 +4226,8 @@ Oh, and by the way, when Nour was sending you pictures of the clothes, I was wit
         screens.forEach((screen) => screen.classList.remove("active"));
         screens[ENVELOPE_SCREEN].classList.add("active");
         screens[ENVELOPE_SCREEN].focus({ preventScroll: true });
+        // Back to the beginning means back to the main song.
+        syncMusicToScreen(ENVELOPE_SCREEN);
         tryPlayMusic();
       }
       if (cakeRestartBtn) {
