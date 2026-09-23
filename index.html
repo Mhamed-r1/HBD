@@ -1136,8 +1136,21 @@
       .candle.is-off .smoke {
         animation: smokeRise 0.9s ease-out forwards;
       }
-      .cake-screen.is-celebrating .cake {
+      #screen-7.is-celebrating .cake {
         filter: drop-shadow(0 0 18px rgba(255, 215, 120, 0.42));
+      }
+      #screen-7.is-celebrating .cake-stage {
+        min-height: 0;
+        padding: 0;
+      }
+      #screen-7.is-celebrating .candle-prompt {
+        min-height: 0;
+        height: 0;
+        margin: 0;
+        opacity: 0;
+        visibility: hidden;
+        animation: none;
+        transition: opacity 0.3s ease;
       }
       .cake-message {
         display: none;
@@ -1149,7 +1162,7 @@
           transform 0.5s ease;
         text-align: center;
       }
-      .cake-screen.is-celebrating .cake-message {
+      #screen-7.is-celebrating .cake-message {
         display: none;
         opacity: 0;
         transform: translateY(0);
@@ -1174,7 +1187,7 @@
         font-size: clamp(1rem, 1.8vw, 1.2rem);
         padding-inline: 1.4rem;
       }
-      .cake-screen.is-celebrating .cake-restart {
+      #screen-7.is-celebrating .cake-restart {
         opacity: 1;
         visibility: visible;
         transform: translateY(0);
@@ -1192,7 +1205,7 @@
         padding-inline: 1.4rem;
         margin-top: 0.6rem;
       }
-      .cake-screen.is-celebrating .cake-replay {
+      #screen-7.is-celebrating .cake-replay {
         opacity: 1;
         visibility: visible;
         transform: translateY(0);
