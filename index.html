@@ -1600,6 +1600,75 @@
         animation: blink 1s step-end infinite;
       }
 
+      /* letter button: stays hidden until the letter finishes typing */
+      #screen-3 .letter-inner > .letter-next {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transform: translateY(14px) scale(0.92);
+        animation: none;
+      }
+      #screen-3 .letter-inner > .letter-next.is-ready {
+        visibility: visible;
+        pointer-events: auto;
+        animation:
+          letterBtnIn 0.95s cubic-bezier(0.34, 1.56, 0.64, 1) both,
+          letterBtnGlow 3.2s ease-in-out 1.1s infinite;
+      }
+      @keyframes letterBtnIn {
+        0% {
+          opacity: 0;
+          transform: translateY(16px) scale(0.9);
+        }
+        60% {
+          opacity: 1;
+          transform: translateY(-3px) scale(1.04);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+      @keyframes letterBtnGlow {
+        0%,
+        100% {
+          box-shadow: 0 4px 14px rgba(176, 78, 104, 0.14);
+        }
+        50% {
+          box-shadow: 0 10px 26px rgba(176, 78, 104, 0.4);
+        }
+      }
+      /* soft floating hearts that pop with the button */
+      #screen-3 .letter-next .btn-heart {
+        display: inline-block;
+        margin-inline-start: 0.45em;
+        opacity: 0;
+      }
+      #screen-3 .letter-next.is-ready .btn-heart {
+        animation: btnHeartPop 2.4s ease-in-out 0.5s infinite;
+      }
+      @keyframes btnHeartPop {
+        0%,
+        100% {
+          opacity: 0.55;
+          transform: translateY(0) scale(0.9);
+        }
+        50% {
+          opacity: 1;
+          transform: translateY(-4px) scale(1.15);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #screen-3 .letter-inner > .letter-next.is-ready {
+          animation: none;
+          opacity: 1;
+          transform: none;
+        }
+        #screen-3 .letter-next .btn-heart {
+          animation: none;
+        }
+      }
+
       /* ---------- gift box screen ---------- */
       .gift-wrap {
         position: relative;
@@ -3046,7 +3115,7 @@
 
     <!-- SCREEN 4 — LETTER -->
     <section class="screen" id="screen-3">
-      <div class="screen-inner">
+      <div class="screen-inner letter-inner">
         <h1 class="countdown-title" data-i18n="letterTitle">
           كل سنة وإنتي طيبة
         </h1>
@@ -3078,8 +3147,14 @@
           <p>كل سنة وإنتي أقرب لقلبي، وأغلى عندي.</p>
           <p>بحبك، النهارده وبكرة وكل يوم بعده 🤍</p>
         </div>
-        <button class="pill-btn" data-next data-i18n="letterBtn">
-          ذكرياتنا الحلوة
+        <button
+          class="pill-btn letter-next"
+          id="letterBtn"
+          data-next
+          data-i18n="letterBtn"
+        >
+          <span data-i18n="letterBtn">ذكرياتنا الحلوة</span>
+          <span class="btn-heart" aria-hidden="true">🤍</span>
         </button>
       </div>
     </section>
@@ -3335,23 +3410,24 @@
             "وجودك في حياتي فرق معايا أكتر مما تتخيلي بقيتي جزء من أيامي من ضحكتي ومن تفاصيل كتير صغيرة يمكن إنتي مش واخدة بالك منها",
             "شكراً على كل لحظة حلوة عشناها سوا وعلى كل مرة كنتي فيها جنبي وعلى كل ابتسامة كنتي سبب فيها من غير ما تحسي",
             "نفسي السنة الجديدة دي تكون أحلى سنة ليكي تكون مليانة فرحة وراحة ونجاح وتحققي فيها كل حاجة نفسك فيها",
+            "وتكوني أنجح واحدة فتحت براند شنط في الدنيا",
             "وأتمنى أفضل دايماً موجود عشان أشوفك مبسوطة وأكون جنبك في كل خطوة",
             "كل سنة وإنتي أقرب لقلبي وأغلى عندي",
             "بحبك النهارده وبكرة وكل يوم ♥️",
           ],
-          letterBtn: "ذكرياتنا الحلوة",
+          letterBtn: "ذكرياتنا الحلوة 🎨",
           // Screen 5
           memoriesEyebrow: "شوية من أحلى لحظاتنا ♥️",
           memoriesTitle: "ذكرياتنا الحلوة",
-          memoriesBtn: "شوية حاجات ليكي",
+          memoriesBtn: "شوية حاجات ليكي 🦋",
           // Screen 6
           videoEyebrow: "حاجة صغيرة مخصوص عشانك ♥️",
-          videoTitle: "لحظة ليكي إنتي",
+          videoTitle: "لحظة لينا سوا",
           videoHint: "أضف ملف الفيديو الخاص بك في الكود",
-          videoBtn: "كلمات من قلبي",
+          videoBtn: "كلام من قلبي 💌",
           // Screen 7
-          finalPhrases: ["كل سنة وإنتي حبيبتي ♥️", "وأقرب واحدة لقلبي♥️"],
-          finalHidden: "كل سنة وإنتي حبيبتي ♥️",
+          finalPhrases: ["كل سنة وإنتي حبيبتي", "وأقرب واحدة لقلبي♥️"],
+          finalHidden: "كل سنة وإنتي حبيبتي",
           finalMsg: `لو يعلم الحب كم احبك لتمنى الحب ان يكون حبيبي <br />
 أتمنى السنة الجديدة تكون بداية لكل حاجة حلوة نفسك فيها <br />
 شكراً إنك في حياتي يمكن الهدية بسيطة بس كل حاجة فيها اتعملت بحب وكل كلمة فيها طالعة من قلبي أتمنى تكون فرحتك بيها قد فرحتي وأنا بجهزها ليكي<br />
@@ -3365,14 +3441,14 @@
           replayBtn: "نبدأ من الأول ↻",
         },
         en: {
-          pageTitle: "Happy Birthday Dondon ❤️",
+          pageTitle: "Happy Birthday Dondon ♥️",
           langBtnLabel: "عربي",
-          langBtnAria: "التبديل إلى العربية",
+          langBtnAria: "Switch to Arabic",
           themeToggleDark: "Switch to dark mode",
           themeToggleLight: "Switch to light mode",
           musicPlay: "Play birthday music",
           musicPause: "Pause music",
-          // Screen 1
+
           // Screen 1
           cdEyebrow: "Counting the Days and Moments",
           cdTitle:
@@ -3381,23 +3457,27 @@
           lblHours: "Hours",
           lblMins: "Mins",
           lblSecs: "Secs",
-          cdNotePending: "Something beautiful is waiting for you ✨",
+          cdNotePending: "Something sweet is waiting for you ✨",
           cdNoteDone: "🎉 Today is your birthday, my love! 🎂",
           btnEnterLocked: "Wait a little for your gift ✦",
           btnEnterTitle: "Just a little longer ⏳",
           btnEnterUnlocked: "✦ Let’s go ✦",
+
           // Screen 2
-          giftEyebrow: "Something Special Is Waiting for You ♥️",
+          giftEyebrow: "Something Sweet Is Waiting for You ♥️",
           giftAria: "Tap here to open your gift",
           giftHint: "✦ Tap here to open your gift ✦",
           imageTapToClose: "Tap to close",
+
           // Screen 3
           introEyebrow: "A Little Something From My Heart",
           introTitle: "Your Special Day",
           introSub: "Made with love, especially for you ♥️",
           introBtn: "Read My Letter ✦",
+
           // Screen 4
           letterTitle: "Happy Birthday",
+
           letterKicker:
             "Happy Birthday, my love. I hope I always get to see you happy and doing well.",
 
@@ -3410,34 +3490,40 @@
 
             "I hope this new year of your life becomes your best one yet. I hope it's filled with happiness, peace, success, and everything you've been wishing for.",
 
-            "And I hope I'll always be there to see you happy and stand by your side every step of the way.",
+            "And I hope you become the most successful person in the world with your own handbag brand. ♥️",
+
+            "I hope I'll always be there to see you happy and stand by your side every step of the way.",
 
             "Happy Birthday. You are closer to my heart and more precious to me with every day.",
 
             "I love you today, tomorrow, and every day ♥️",
           ],
 
-          letterBtn: "Our Beautiful Memories",
+          letterBtn: "Our Beautiful Memories 🎨",
 
           // Screen 5
           memoriesEyebrow: "Some of Our Best Moments ♥️",
           memoriesTitle: "Our Beautiful Memories",
-          memoriesBtn: "A Few Things for You",
+          memoriesBtn: "A Few Things for You 🦋",
 
           // Screen 6
           videoEyebrow: "A Little Something Made Just for You ♥️",
-          videoTitle: "A Moment Just for You",
+          videoTitle: "A Moment for Both of Us",
           videoHint: "Add your video file in the code",
-          videoBtn: "A Few Words From My Heart",
+          videoBtn: "Words From My Heart 💌",
 
           // Screen 7
-          finalPhrases: ["Happy Birthday My Love", "I Will Always Love You ♥️"],
+          finalPhrases: [
+            "Happy Birthday, My Love",
+            "The Closest One to My Heart ♥️",
+          ],
 
-          finalHidden: "Happy Birthday My Love ♥️",
+          finalHidden: "Happy Birthday, My Love",
 
-          finalMsg: `I hope this new year of your life is the beginning of everything beautiful you've been wishing for.<br />
+          finalMsg: `If love knew how much I love you, it would wish to be my beloved. ♥️<br />
+I hope this new year of your life is the beginning of everything beautiful you've been wishing for.<br />
 Thank you for being in my life. The gift might be simple, but every part of it was made with love, and every word came straight from my heart. I hope it makes you as happy as I was while preparing it for you.<br />
-Oh, and by the way, when Nour was sending you pictures of the clothes, I was with her. I wanted to make you a little surprise, so I got you everything you liked that day. ♥️`,
+Oh, and by the way, on the day Nour was sending you pictures of the clothes, I was with her. I wanted to make you a little surprise, so I got you everything you liked that day. ♥️`,
 
           finalSign: "Just for you <span>♥️</span>",
 
@@ -3445,7 +3531,7 @@ Oh, and by the way, when Nour was sending you pictures of the clothes, I was wit
 
           // Cake
           cakeEyebrow: "Birthday Celebration",
-          cakeTitle: "Happy Birthday Dondon",
+          cakeTitle: "Happy Birthday, Dondon",
           cakeCelebrationText: "Happy Birthday ♥️",
           candlePrompt: "Blow out the candles",
           replayBtn: "Start From Beginning ↻",
@@ -4236,12 +4322,22 @@ Oh, and by the way, when Nour was sending you pictures of the clothes, I was wit
 
       /* ================= letter typewriter (screen 4) ================= */
       const letterCard = document.getElementById("letterCard");
+      const letterBtn = document.getElementById("letterBtn");
+      const LETTER_CHAR_DELAY = 52;
+      const LETTER_PARA_PAUSE = 850;
       let letterParas = [];
       let letterTexts = [];
       let letterChars = [];
       let letterTimer = null;
       let letterActive = false;
       let letterDataReady = false;
+
+      function hideLetterBtn() {
+        if (letterBtn) letterBtn.classList.remove("is-ready");
+      }
+      function showLetterBtn() {
+        if (letterBtn) letterBtn.classList.add("is-ready");
+      }
 
       function setupLetterData() {
         if (!letterCard || letterDataReady) return;
@@ -4271,12 +4367,21 @@ Oh, and by the way, when Nour was sending you pictures of the clothes, I was wit
         });
         if (letterCard) letterCard.scrollTop = letterCard.scrollHeight;
         if (ci < chars.length) {
-          letterTimer = setTimeout(() => letterTypeStep(pi, ci + 1), 30);
+          letterTimer = setTimeout(
+            () => letterTypeStep(pi, ci + 1),
+            LETTER_CHAR_DELAY,
+          );
         } else {
           letterParas[pi].classList.remove("typing");
           letterParas[pi].classList.add("typed");
           if (pi < letterParas.length - 1) {
-            letterTimer = setTimeout(() => letterTypeStep(pi + 1, 0), 400);
+            letterTimer = setTimeout(
+              () => letterTypeStep(pi + 1, 0),
+              LETTER_PARA_PAUSE,
+            );
+          } else {
+            // letter finished -> gently reveal the button
+            letterTimer = setTimeout(showLetterBtn, 620);
           }
         }
       }
@@ -4284,6 +4389,7 @@ Oh, and by the way, when Nour was sending you pictures of the clothes, I was wit
       function startLetterTypewriter() {
         if (letterActive) return;
         letterActive = true;
+        hideLetterBtn();
         setupLetterData();
         if (!letterDataReady) return;
         letterParas.forEach((p) => {
@@ -4295,6 +4401,8 @@ Oh, and by the way, when Nour was sending you pictures of the clothes, I was wit
             p.textContent = letterTexts[i];
             p.classList.add("typed");
           });
+          if (letterCard) letterCard.scrollTop = letterCard.scrollHeight;
+          showLetterBtn();
           return;
         }
         letterTypeStep(0, 0);
@@ -4425,6 +4533,7 @@ Oh, and by the way, when Nour was sending you pictures of the clothes, I was wit
           });
           letterDataReady = false;
           setupLetterData();
+          hideLetterBtn();
         }
 
         // Active screen updates
